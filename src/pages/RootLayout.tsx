@@ -4,7 +4,7 @@ import Header from "../components/Header";
 
 const RootLayout = () => {
   return (
-    <div className="bg-skin-100 min-h-screen flex flex-col">
+    <div className="bg-skin-100 min-h-screen flex flex-col overflow-x-hidden">
       <Header />
       <main className="flex-1">
         <Outlet />

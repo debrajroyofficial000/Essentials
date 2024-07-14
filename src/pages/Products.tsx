@@ -1,46 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-
-export interface IReviews {
-  comment: string;
-  date: string;
-  rating: number;
-  reviewerEmail: string;
-  reviewerName: string;
-}
-export interface IProduct {
-  availabilityStatus: string;
-  brand: string;
-  category: string;
-  description: string;
-  discountPercentage: number;
-  id: number;
-  images: string[];
-  minimumOrderQuantity: number;
-  price: number;
-  rating: number;
-  reviews: IReviews[];
-  tags: string[];
-  thumbnail: string;
-  title: string;
-}
+import { useProducts } from "../context/ProductContext";
+import { IProduct } from "../utils/lib";
 
 const Products = () => {
-  const [products, setProducts] = useState<IProduct[]>([]);
+  const { products, setProducts } = useProducts();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("asc");
   const [skip, setSkip] = useState(0);
+  const [maxPrice, setMaxPrice] = useState<number | string>("0");
   const [total, setTotal] = useState(0);
   const [error, setError] = useState<{
     type: "category" | "products";
     message: string;
   } | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number | string>("0");
+
   useEffect(() => {
     (async () => {
       try {
         const productsResponse = await fetch(
-          `https://dummyjson.com/products/search?q=${search}&select=availabilityStatus,brand,category,description,discountPercentage,id,images,minimumOrderQuantity,price,rating,reviews,tags,thumbnail,title&sortBy=price&order=${sort}&limit=30&skip=${
+          `https://dummyjson.com/products/search?q=${search}&select=brand,category,description,id,images,price,rating,reviews,tags,thumbnail,title&sortBy=price&order=${sort}&limit=30&skip=${
             skip * 30
           }`
         );
@@ -60,17 +39,18 @@ const Products = () => {
         setTotal(productsData.total);
         setError(null); // Reset error on successful fetch
       } catch (err) {
-        if (err instanceof Error)
+        if (err instanceof Error) {
           setError({ type: "products", message: err.message });
+        }
       }
     })();
-  }, [search, sort, skip]);
+  }, [search, sort, skip, setProducts]);
 
   const filteredProducts: IProduct[] = useMemo(
     () =>
       products.filter((product) => {
         const filteredPricedProd = Number(maxPrice)
-          ? product.price <= Number(maxPrice)
+          ? Number(product.price) <= Number(maxPrice)
           : true;
         return filteredPricedProd;
       }),
@@ -95,7 +75,7 @@ const Products = () => {
 
         <div className="flex flex-col md:flex-row justify-start items-center gap-4 my-4">
           {/* Price Sort component */}
-          <div className="">
+          <div>
             <label
               className="block text-sm font-semibold mb-2"
               htmlFor="maxPrice"
@@ -107,12 +87,14 @@ const Products = () => {
               name="maxPrice"
               placeholder="1000.00"
               value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              onChange={(e) =>
+                setMaxPrice(e.target.value ? Number(e.target.value) : "0")
+              }
               className="px-4 py-2 rounded border font-small text-md outline-none"
             />
           </div>
           {/* Sort Component */}
-          <div className="">
+          <div>
             <label
               className="block text-sm font-semibold mb-2"
               htmlFor="custom-select"
@@ -155,9 +137,6 @@ const Products = () => {
               <p className="text-gray-700 mb-2">{product.brand}</p>
               <p className="text-gray-900 font-bold mb-2">${product.price}</p>
               <p className="text-gray-600">{product.description}</p>
-              <button className="bg-skin-700 text-skin-300 px-4 py-2 rounded my-2">
-                Add to Cart
-              </button>
             </Link>
           ))}
         </div>
@@ -167,12 +146,12 @@ const Products = () => {
           {skip > 0 && (
             <button
               onClick={() => setSkip((prev) => prev - 1)}
-              className="bg-skin-500 text-skin-700 px-4 py-2 rounded text-md font-semibold border-2 border-skin-700 "
+              className="bg-skin-500 text-skin-700 px-4 py-2 rounded text-md font-semibold border-2 border-skin-700"
             >
               Prev
             </button>
           )}
-          {skip * 30 < total && skip * 30 + 30 <= total && (
+          {(skip + 1) * 30 < total && (
             <button
               onClick={() => setSkip((prev) => prev + 1)}
               className="bg-skin-500 text-skin-700 px-4 py-2 rounded text-md font-semibold border-2 border-skin-700"

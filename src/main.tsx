@@ -10,6 +10,8 @@ import Products from "./pages/Products";
 import Product from "./pages/Product";
 import Cart from "./pages/Cart";
 import NotFound from "./pages/NotFound";
+import ProductContextProvider from "./context/ProductContext";
+import CartContextProvider from "./context/CartContext";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ProductContextProvider>
+      <CartContextProvider>
+        <RouterProvider router={router} />
+      </CartContextProvider>
+    </ProductContextProvider>
   </React.StrictMode>
 );

@@ -1,7 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { AiFillShopping } from "react-icons/ai";
+import { useCart } from "../context/CartContext";
 
 const Header = () => {
+  const { cartProducts } = useCart();
   return (
     <header className="bg-skin-700 text-skin-100 py-4 shadow-md">
       <div className="container mx-auto px-4 flex justify-between items-center">
@@ -29,7 +31,7 @@ const Header = () => {
           >
             <AiFillShopping />
             <div className="absolute bottom-3 left-3 w-7 h-7 text-center bg-skin-100 text-skin-700 text-md rounded-full">
-              0
+              {cartProducts.length}
             </div>
           </NavLink>
         </nav>

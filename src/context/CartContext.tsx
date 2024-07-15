@@ -1,9 +1,14 @@
 import { createContext, ReactElement, useContext, useState } from "react";
 import { IProduct } from "../utils/lib";
 
+export interface ICartProd {
+  cartItem: IProduct;
+  qty: number;
+}
+
 export interface ICart {
-  cartProducts: IProduct[];
-  setCartProducts: (cartProducts: IProduct[]) => void;
+  cartProducts: ICartProd[];
+  setCartProducts: (cartProducts: ICartProd[]) => void;
 }
 
 export const CartContext = createContext<ICart | undefined>(undefined);
@@ -17,7 +22,7 @@ export const useCart = () => {
 };
 
 const CartContextProvider = ({ children }: { children: ReactElement }) => {
-  const [cartProducts, setCartProducts] = useState<IProduct[]>([]);
+  const [cartProducts, setCartProducts] = useState<ICartProd[]>([]);
   return (
     <CartContext.Provider value={{ cartProducts, setCartProducts }}>
       {children}

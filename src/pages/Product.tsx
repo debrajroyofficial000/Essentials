@@ -1,7 +1,7 @@
 import { AiFillStar, AiFillHeart } from "react-icons/ai";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useProducts } from "../context/ProductContext";
-import { useCart } from "../context/CartContext";
+import { ICartProd, useCart } from "../context/CartContext";
 import { IProduct } from "../utils/lib";
 import { useEffect } from "react";
 
@@ -14,29 +14,41 @@ const Product = () => {
   const targetProduct = products.find((prod) => prod.id === Number(id));
 
   useEffect(() => {
-    if (!id && products.length >= 0) {
+    if (products.length <= 0) {
       navigate("/products");
     }
   }, [id, products, navigate]);
 
+  const handleAddToCart = (item: IProduct) => {
+    const isPresent = cartProducts.some(
+      (prod) => prod.cartItem.id === Number(id)
+    );
+    const newItem: ICartProd = { cartItem: item, qty: 1 };
+    if (!isPresent) {
+      setCartProducts([...cartProducts, newItem]);
+    }
+  };
+
   return (
-    <div className="p-4">
+    <div className="p-4 container mx-auto">
       <button
-        className="mb-4 text-skin-700"
+        className="mb-4 text-skin-700 hover:underline"
         onClick={() => navigate(-1)} // This will navigate to the previous page
       >
         &larr; Back
       </button>
-      <div className="flex flex-col md:flex-row justify-center items-center gap-8">
+      <div className="flex flex-col md:flex-row justify-center items-start gap-8">
         <div className="flex-1 border rounded-md overflow-hidden shadow-lg bg-white">
           <img
             src={targetProduct?.images[0]}
             alt={targetProduct?.title}
-            className="w-full h-auto"
+            className="w-full h-auto transition-transform transform hover:scale-110 duration-300"
           />
         </div>
-        <div className="flex-1 p-4">
-          <h2 className="text-2xl font-bold mb-2">{targetProduct?.title}</h2>
+        <div className="flex-1 p-4 bg-white rounded-md shadow-lg">
+          <h2 className="text-2xl font-bold mb-2 text-skin-700">
+            {targetProduct?.title}
+          </h2>
           <h3 className="text-lg text-gray-700 mb-2">{targetProduct?.brand}</h3>
           <p className="text-sm text-gray-500 mb-4">
             {targetProduct?.category}
@@ -61,20 +73,30 @@ const Product = () => {
           <p className="text-xl font-bold text-gray-900">
             ${targetProduct?.price}
           </p>
-          <button
-            className="bg-skin-700 text-white px-4 py-2 rounded my-4"
-            onClick={() =>
-              setCartProducts([...cartProducts, targetProduct as IProduct])
-            }
-          >
-            Add to Cart
-          </button>
+          {cartProducts.some((prod) => prod.cartItem.id === Number(id)) ? (
+            <Link
+              className="bg-skin-700 text-white px-4 py-2 rounded my-4 block text-center transition-colors duration-300 hover:bg-skin-600"
+              to={"/cart"}
+            >
+              Go to cart
+            </Link>
+          ) : (
+            <button
+              className="bg-skin-700 text-white px-4 py-2 rounded my-4 transition-colors duration-300 hover:bg-skin-600"
+              onClick={() => handleAddToCart(targetProduct as IProduct)}
+            >
+              Add to Cart
+            </button>
+          )}
         </div>
       </div>
       <div className="max-w-[500px] w-full border rounded-md p-4 shadow-lg mt-8 bg-white">
         <h3 className="text-xl font-semibold mb-4">Reviews</h3>
         {targetProduct?.reviews.map((review, index) => (
-          <div key={index} className="my-4 p-4 border rounded-md shadow">
+          <div
+            key={index}
+            className="my-4 p-4 border rounded-md shadow bg-skin-50"
+          >
             <div className="flex justify-between items-center mb-2">
               <div>
                 <p className="font-bold text-gray-900">{review.reviewerName}</p>

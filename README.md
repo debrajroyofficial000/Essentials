@@ -11,6 +11,7 @@ Essentials is a modern e-commerce platform built with React and TypeScript, usin
   - [Features](#features)
   - [Folder Structure](#folder-structure)
   - [Screen Shots](#screen-shots)
+  - [Preview](#preview)
 
 ## Installation
 
@@ -59,13 +60,12 @@ Essentials provides a seamless shopping experience with the following main featu
 ```
 essentials/
 ├── public/
-│   ├── index.html
+│   ├── assets/
 │   └── ...
 ├── src/
-│   ├── assets/
 │   ├── components/
-│   │   ├── Cart.tsx
-│   │   ├── Product.tsx
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
 │   │   └── ...
 │   ├── context/
 │   │   ├── CartContext.tsx
@@ -73,14 +73,16 @@ essentials/
 │   │   └── ...
 │   ├── pages/
 │   │   ├── Home.tsx
-│   │   ├── ProductDetail.tsx
+│   │   ├── Cart.tsx
+│   │   ├── NotFound.tsx
+│   │   ├── Products.tsx
+│   │   ├── Product.tsx
+│   │   ├── RootLayout.tsx
 │   │   └── ...
-│   ├── styles/
-│   │   └── tailwind.css
 │   ├── utils/
 │   │   └── lib.ts
-│   ├── App.tsx
-│   ├── index.tsx
+│   │── index.css
+│   ├── main.tsx
 │   └── ...
 ├── tailwind.config.js
 ├── package.json
@@ -98,3 +100,7 @@ essentials/
 ![ss6](./public/assets/s6.png)
 ![ss7](./public/assets/s7.png)
 ![ss8](./public/assets/s8.png)
+
+## Preview
+
+[preview](https://66955f846a04137b2905c88c--react-ts-essentials.netlify.app/)
